@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>ArtikelFinder harness</title>
+<!-- Dev only, not part of the extension. Serves the same modules as the extension
+     so the bubble can be checked in a normal browser tab, under hostile page CSS. -->
+<style>
+  /* Deliberately hostile: things real sites do. The bubble must survive all of it. */
+  * { font-family: "Comic Sans MS", cursive !important; color: hotpink !important;
+      display: block !important; position: static !important; z-index: 0 !important;
+      box-sizing: content-box !important; line-height: 3 !important; }
+  div, span, p, table, details { border: 3px dashed orange !important; background: yellow !important; }
+  body { margin: 40px; transform: scale(1); }
+  head, head * { display: none !important; } /* keep the harness readable */
+  #text span { display: inline !important; }
+</style>
+</head>
+<body>
+<h1>Harness: select a word, press Alt+Shift+A</h1>
+<p id="text">Die Kinder sitzen mit den Studenten an den Tischen. Auf dem Tisch liegen zwei Leitern
+und das Buch des Lehrers. Die Jugendlichen gehen über die STRASSE und schauen auf das Dach.
+„Mäuse“ laufen durch das Internet. Xyzzyplotz ist kein Wort; der Tisch ist zwei Wörter.</p>
+<p id="status">loading…</p>
+<script src="../src/bubble.js"></script>
+<script type="module">
+  import { Lexicon } from "../src/lexicon.js";
+  import { resolveSelection } from "../src/normalize.js";
+  import { buildView } from "../src/view.js";
+
+  const lexicon = await Lexicon.open(async (rel) => (await fetch(`../data/${rel}`)).json());
+  document.getElementById("status").textContent = "ready";
+
+  // Same path as the extension: selection -> resolveSelection -> buildView -> bubble.
+  window.lookupSelection = async () => {
+    const view = buildView(await resolveSelection(lexicon, String(getSelection())));
+    globalThis.__artikelFinder.show(view, { anchorToSelection: true });
+    return view;
+  };
+  window.selectWord = (word, nth = 0) => {
+    const node = document.getElementById("text").firstChild;
+    let index = -1;
+    for (let i = 0; i <= nth; i++) index = node.textContent.indexOf(word, index + 1);
+    const range = document.createRange();
+    range.setStart(node, index);
+    range.setEnd(node, index + word.length);
+    getSelection().removeAllRanges();
+    getSelection().addRange(range);
+  };
+  addEventListener("keydown", (e) => {
+    if (e.altKey && e.shiftKey && e.code === "KeyA") window.lookupSelection();
+  });
+</script>
+</body>
+</html>
