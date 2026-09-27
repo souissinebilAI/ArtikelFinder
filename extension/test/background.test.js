@@ -14,6 +14,8 @@ test("manifest keeps the least-privilege promise", () => {
   assert.deepStrictEqual([...manifest.permissions].sort(), ["activeTab", "contextMenus", "scripting"]);
   assert.deepStrictEqual(manifest.options_ui, { page: "about.html", open_in_tab: true });
   assert.ok(existsSync(EXT + "about.html"));
+  assert.deepStrictEqual(Object.keys(manifest.icons), ["16", "32", "48", "128"]);
+  for (const icon of Object.values(manifest.icons)) assert.ok(existsSync(EXT + icon), icon);
   for (const key of ["host_permissions", "optional_host_permissions", "content_scripts", "web_accessible_resources"]) {
     assert.equal(manifest[key], undefined, `${key} must not be declared`);
   }

@@ -31,7 +31,7 @@ def source_files():
 
 def referenced_files(manifest):
     """Files the manifest points at; a missing one would break the installed extension."""
-    refs = [manifest["background"]["service_worker"], manifest["options_ui"]["page"]]
+    refs = [manifest["background"]["service_worker"], manifest["options_ui"]["page"], *manifest["icons"].values()]
     return refs + ["src/bubble.js"]  # injected by background.js via chrome.scripting
 
 
