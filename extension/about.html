@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ArtikelFinder: about, sources and licenses</title>
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1d1d1f; --muted: #5f6368; --line: #dadce0; --link: #1a56db;
+    --masc: #1a56db; --fem: #c81e1e; --neut: #0e7a3b;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #202124; --fg: #e8eaed; --muted: #9aa0a6; --line: #3c4043; --link: #8ab4f8;
+            --masc: #8ab4f8; --fem: #f28b82; --neut: #81c995; }
+  }
+  body { background: var(--bg); color: var(--fg); margin: 0;
+         font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  h2 { font-size: 18px; margin: 32px 0 8px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .lead { color: var(--muted); margin: 0 0 16px; }
+  a { color: var(--link); }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; vertical-align: top; padding: 6px 12px 6px 0; border-bottom: 1px solid var(--line); }
+  th { font-weight: 600; }
+  td:first-child { white-space: nowrap; }
+  kbd { border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; font: 13px ui-monospace, monospace; }
+  .der { color: var(--masc); font-weight: 700; } .die { color: var(--fem); font-weight: 700; }
+  .das { color: var(--neut); font-weight: 700; }
+  code { font: 13px ui-monospace, monospace; }
+</style>
+</head>
+<body>
+<main>
+  <h1>ArtikelFinder</h1>
+  <p class="lead">Shows <span class="der">der</span>, <span class="die">die</span> or
+    <span class="das">das</span> for a selected German noun, including inflected forms,
+    and says where every answer comes from.</p>
+
+  <h2>How to use</h2>
+  <p>Select a word on any page, then right-click → <strong>Artikel für „…“</strong>, or press
+    <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd>. If the shortcut does nothing, set it under
+    <code>chrome://extensions/shortcuts</code> (Edge: <code>edge://extensions/shortcuts</code>).</p>
+  <p>Some words have several answers: <em>Leitern</em> is <span class="die">die</span> Leitern
+    (ladders) and also <span class="der">den</span> Leitern (dative plural of <em>der Leiter</em>,
+    leader). ArtikelFinder shows all of them instead of guessing, because the selected word alone
+    cannot tell them apart.</p>
+
+  <h2>How certain is an answer?</h2>
+  <table>
+    <tr><th>Label</th><th>Meaning</th></tr>
+    <tr><td>2 sources agree</td><td>UniMorph and Wikidata give the same gender.</td></tr>
+    <tr><td>1 source (Wikidata)</td><td>The gender comes from Wikidata only.</td></tr>
+    <tr><td>1 source (UniMorph)</td><td>The gender comes from UniMorph only; Wikidata has no matching entry.</td></tr>
+    <tr><td>Sources disagree</td><td>The sources give different genders. ArtikelFinder shows Wikidata's, which was
+      right in nearly every case we checked by hand, and names the other source's answer.</td></tr>
+    <tr><td>Gender unknown</td><td>The word is in the dictionary, but no source gives its gender.</td></tr>
+  </table>
+
+  <h2>Privacy</h2>
+  <p>Everything runs on your computer. The dictionary ships inside the extension; ArtikelFinder
+    makes no network requests, collects nothing, and only reads a page when you ask it to look up
+    a word. Its permissions: context menus, and access to the current tab at the moment you use
+    the menu entry or the shortcut.</p>
+
+  <h2>Sources and licenses</h2>
+  <p>The dictionary combines two open data sets and is published under
+    <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>:</p>
+  <ul>
+    <li><strong>UniMorph German</strong> (<a href="https://github.com/unimorph/deu">github.com/unimorph/deu</a>),
+      derived from English <a href="https://en.wiktionary.org/">Wiktionary</a>.
+      CC BY-SA 3.0. Credit: the UniMorph project and the Wiktionary contributors.</li>
+    <li><strong>Wikidata lexemes</strong> (<a href="https://www.wikidata.org/wiki/Wikidata:Lexicographical_data">wikidata.org</a>).
+      CC0, with thanks to the Wikidata community.</li>
+  </ul>
+  <p>ArtikelFinder changed the data: homographs split, genders checked and corrected against
+    Wikidata, missing nouns and missing modern dative forms added, and the result re-encoded.
+    The full list is in <code>DATA_LICENSE.md</code> in the source repository.</p>
+  <p>The extension's code is MIT-licensed, © 2026 souissinebilAI.</p>
+</main>
+</body>
+</html>

@@ -48,6 +48,13 @@
     th, td { text-align: left; padding: 2px 10px 2px 0; vertical-align: top; }
     th { color: var(--muted); font-weight: 500; }
     .error { margin: 6px 0 0; }
+    .footer {
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px;
+      margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--line);
+      color: var(--muted); font-size: 11px;
+    }
+    .link { all: unset; cursor: pointer; color: var(--muted); text-decoration: underline; }
+    .link:hover, .link:focus-visible { color: var(--fg); }
   `;
 
   const HOST_STYLE = {
@@ -162,6 +169,16 @@
       for (const note of view.notes) card.append(el("p", "note", note));
       for (const entry of view.entries) card.append(renderEntry(entry));
     }
+    // Attribution with every result (CC BY-SA), plus the way to the About page.
+    const footer = el("div", "footer");
+    footer.append(el("span", "", "Data: UniMorph (CC BY-SA 3.0) · Wikidata (CC0)"));
+    const about = el("button", "link", "Sources & licenses");
+    about.type = "button";
+    about.addEventListener("click", () => {
+      globalThis.chrome?.runtime?.sendMessage?.({ type: "open-about" }); // absent in dev/harness.html
+    });
+    footer.append(about);
+    card.append(footer);
     root.append(style, card);
     (document.body ?? document.documentElement).append(host);
     const reposition = () => place(host, card, anchorRect(options.anchorToSelection !== false));

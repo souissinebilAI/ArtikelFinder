@@ -38,6 +38,13 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
   lookupAndShow(tab.id, 0, text);
 });
 
+// The bubble's "Sources & licenses" link. Only our own injected script may ask.
+chrome.runtime.onMessage.addListener((message, sender) => {
+  if (sender.id === chrome.runtime.id && message?.type === "open-about") {
+    chrome.runtime.openOptionsPage();
+  }
+});
+
 /** @type {Promise<Lexicon> | null} opened lazily; the worker is restarted often */
 let lexiconPromise = null;
 

@@ -12,6 +12,8 @@ const manifest = JSON.parse(readFileSync(EXT + "manifest.json", "utf8"));
 test("manifest keeps the least-privilege promise", () => {
   assert.equal(manifest.manifest_version, 3);
   assert.deepStrictEqual([...manifest.permissions].sort(), ["activeTab", "contextMenus", "scripting"]);
+  assert.deepStrictEqual(manifest.options_ui, { page: "about.html", open_in_tab: true });
+  assert.ok(existsSync(EXT + "about.html"));
   for (const key of ["host_permissions", "optional_host_permissions", "content_scripts", "web_accessible_resources"]) {
     assert.equal(manifest[key], undefined, `${key} must not be declared`);
   }
@@ -28,7 +30,13 @@ function fakeChrome({ failFrames = [] } = {}) {
   const on = (name) => ({ addListener: (fn) => { listeners[name] = fn; } });
   const calls = [];
   const chrome = {
-    runtime: { onInstalled: on("installed"), getURL: (p) => `ext://${p}` },
+    runtime: {
+      id: "self",
+      onInstalled: on("installed"),
+      onMessage: on("message"),
+      getURL: (p) => `ext://${p}`,
+      openOptionsPage: () => calls.push({ openedAbout: true }),
+    },
     contextMenus: {
       onClicked: on("menu"),
       removeAll: (cb) => cb(),
@@ -107,4 +115,14 @@ test("unknown word still gets an honest bubble", { skip }, async () => {
   fake.listeners.menu({ menuItemId: "artikel-lookup", selectionText: "Xyzzyplotz", frameId: 0 }, { id: 1 });
   await settle();
   assert.equal(shows(fake.calls)[0].args[0].kind, "error");
+});
+
+test("about link: opens the About page, only for our own scripts", { skip }, async () => {
+  const fake = fakeChrome();
+  await loadBackground(fake);
+  fake.listeners.message({ type: "open-about" }, { id: "some-other-extension" });
+  fake.listeners.message({ type: "something-else" }, { id: "self" });
+  assert.equal(fake.calls.filter((c) => c.openedAbout).length, 0);
+  fake.listeners.message({ type: "open-about" }, { id: "self" });
+  assert.equal(fake.calls.filter((c) => c.openedAbout).length, 1);
 });

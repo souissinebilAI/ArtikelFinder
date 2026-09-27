@@ -5,6 +5,7 @@
   "description": "Shows der, die or das for a selected German noun, including inflected forms, with the source of every answer.",
   "minimum_chrome_version": "116",
   "permissions": ["contextMenus", "activeTab", "scripting"],
+  "options_ui": { "page": "about.html", "open_in_tab": true },
   "background": {
     "service_worker": "src/background.js",
     "type": "module"
