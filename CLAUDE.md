@@ -74,7 +74,14 @@ Carried over from planning work in Claude (chat/Cowork). Treat this as settled c
   - Data fix found by a view test: UniMorph lists only archaic "dem Tische"/"dem Kinde" as dative singular for ~6,400 strong nouns. `restore_bare_dative()` in `pipeline/unimorph.py` adds the bare form first (Wikidata has it for 99.5% of affected nouns it covers). Patterns 1,201 → 1,176.
   - Visual check: `extension/dev/harness.html` (served by `.claude/launch.json` "harness", `python -m http.server 8765 --directory extension`) runs the real modules under hostile page CSS. Browser-pane gotcha: screenshots often time out and scroll events do not fire while the pane is not rendering; a real mouse-wheel scroll confirmed close-on-scroll works.
   - Not yet verified in real Chrome (the pane cannot load unpacked extensions): user runs `docs/MANUAL_TEST.md`.
-  - MIT `LICENSE`, copyright souissinebilAI. Still to do in piece 4: `DATA_LICENSE.md`, `about.html`, README, release zip script (exclude `dev/`, `test/`).
+  - MIT `LICENSE`, copyright souissinebilAI.
+  - Manual test in Edge (2026-09-27): right-click lookup works; Edge left the suggested Alt+Shift+A unassigned (conflict, no message), worked after setting it in `edge://extensions/shortcuts`.
+- **Step E4, licensing + release (2026-09-27).**
+  - `DATA_LICENSE.md`: code MIT, built data CC BY-SA 3.0 (adaptation of UniMorph CC BY-SA 3.0 + Wikidata CC0), with the list of changes made.
+  - `extension/about.html` (usage, certainty labels, privacy, sources) registered as `options_ui` (no new permission). Every bubble has an attribution footer; its "Sources & licenses" button messages the worker, which calls `openOptionsPage()` only if `sender.id === chrome.runtime.id`.
+  - `pipeline/package_extension.py` → `build/artikelfinder-<version>.zip` (7.1 MB): exports data fresh into staging, excludes `dev/`/`test/`, adds both licenses, checks manifest references, deterministic zip (same hash on rebuild).
+  - `README.md` with `docs/screenshot.png` (headless Chrome, `--user-data-dir` in scratchpad, harness `?clean&word=Leitern`; window must be tall enough or the bubble is clamped over the word).
+  - Repo on GitHub, private: https://github.com/souissinebilAI/ArtikelFinder (commits use the noreply address `330559755+souissinebilAI@users.noreply.github.com`, set in local git config). Plan: make public once piece 4 is pushed.
   - Full check: `python pipeline/build_lexicon.py && python pipeline/export_runtime.py && python pipeline/export_runtime.py --out extension/data && python tests/make_golden.py && python -m unittest discover tests && npm test`
 
 The original cloud chat session couldn't bulk-download the UniMorph data file directly (its network sandbox blocks raw.githubusercontent.com/huggingface.co) — that's why this moved to a local/Code environment with real git access. If the `deu` file isn't already in this project folder, `git clone https://github.com/unimorph/deu.git vendor/unimorph-deu` is the next concrete action.

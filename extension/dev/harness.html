@@ -5,7 +5,7 @@
 <title>ArtikelFinder harness</title>
 <!-- Dev only, not part of the extension. Serves the same modules as the extension
      so the bubble can be checked in a normal browser tab, under hostile page CSS. -->
-<style>
+<style id="hostile">
   /* Deliberately hostile: things real sites do. The bubble must survive all of it. */
   * { font-family: "Comic Sans MS", cursive !important; color: hotpink !important;
       display: block !important; position: static !important; z-index: 0 !important;
@@ -14,6 +14,13 @@
   body { margin: 40px; transform: scale(1); }
   head, head * { display: none !important; } /* keep the harness readable */
   #text span { display: inline !important; }
+</style>
+<style>
+  /* ?clean: an ordinary page, used for the README screenshot */
+  html.clean body { margin: 0; padding: 40px 48px; background: #f6f7f9; color: #1d1d1f;
+                    font: 20px/1.7 Georgia, serif; }
+  html.clean h1, html.clean #status { display: none; }
+  html.clean #text { max-width: 760px; }
 </style>
 </head>
 <body>
@@ -28,6 +35,12 @@ und das Buch des Lehrers. Die Jugendlichen gehen über die STRASSE und schauen a
   import { resolveSelection } from "../src/normalize.js";
   import { buildView } from "../src/view.js";
 
+  // ?clean: drop the hostile CSS. ?word=Tischen[&nth=0]: select it and look it up on load.
+  const params = new URLSearchParams(location.search);
+  if (params.has("clean")) {
+    document.getElementById("hostile").remove();
+    document.documentElement.classList.add("clean");
+  }
   const lexicon = await Lexicon.open(async (rel) => (await fetch(`../data/${rel}`)).json());
   document.getElementById("status").textContent = "ready";
 
@@ -47,6 +60,10 @@ und das Buch des Lehrers. Die Jugendlichen gehen über die STRASSE und schauen a
     getSelection().removeAllRanges();
     getSelection().addRange(range);
   };
+  if (params.get("word")) {
+    window.selectWord(params.get("word"), Number(params.get("nth") ?? 0));
+    await window.lookupSelection();
+  }
   addEventListener("keydown", (e) => {
     if (e.altKey && e.shiftKey && e.code === "KeyA") window.lookupSelection();
   });
