@@ -6,6 +6,7 @@ Expected values are German grammar facts, written independently of what the
 pipeline outputs. A failure means the data or the pipeline is wrong, not the test.
 """
 import json
+import re
 import unittest
 from pathlib import Path
 
@@ -180,6 +181,12 @@ class Invariants(unittest.TestCase):
             for cell, forms in p["cells"].items():
                 for f in forms:
                     self.assertIn(cell, next(c for pid, c in INDEX[f] if pid == p["id"]))
+
+    def test_no_packed_variants(self):
+        # Wikidata sometimes writes "Monstren, Monstra" in one form; each must be its own entry.
+        self.assertEqual([f for f in INDEX if re.search(r"[^\W\d_],\s*[^\W\d_]", f)], [])
+        self.assertIn("Monstra", INDEX)
+        self.assertIn("0,2-Liter-Flasche", INDEX)  # decimal comma is part of the word
 
     def test_known_genders_only(self):
         self.assertLessEqual({g for p in PARADIGMS for g in p["genders"]}, {"MASC", "FEM", "NEUT"})

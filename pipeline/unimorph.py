@@ -6,11 +6,17 @@ several homograph entries (der Leiter / die Leiter) comes out as one lemma with
 several back-to-back paradigms, all stamped with the *same* gender. We recover
 the paradigm boundaries here; gender is resolved later against Wikidata.
 """
+import re
 from dataclasses import dataclass, field
 
 CASES = ("NOM", "GEN", "DAT", "ACC")
 NUMBERS = ("SG", "PL")
 GENDERS = ("MASC", "FEM", "NEUT")
+
+# Both sources sometimes pack spelling variants into one form ("Monstren, Monstra",
+# "Jesus,Jesu"). Only letter-comma-letter separates variants; decimal commas are
+# part of the word (0,2-Liter-Flasche, 1,2,3-Propentricarbonsäure).
+PACKED_VARIANTS = re.compile(r"(?<=[^\W\d_]),\s*(?=[^\W\d_])")
 
 
 @dataclass
@@ -83,7 +89,8 @@ def read_paradigms(path):
                 if current is not None:
                     yield current
                 current = Paradigm(lemma, genders)
-            current.add(case, number, form)
+            for variant in PACKED_VARIANTS.split(form):
+                current.add(case, number, variant)
             prev_cell = cell
     if current is not None:
         yield current

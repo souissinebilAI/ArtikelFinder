@@ -31,7 +31,7 @@ from collections import defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from unimorph import load_paradigms  # noqa: E402
+from unimorph import PACKED_VARIANTS, load_paradigms  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 UNIMORPH = ROOT / "vendor/unimorph-deu/deu"
@@ -59,7 +59,11 @@ def lexeme_cells(lex):
         case = next((x for x in f["feats"] if x in ("NOM", "GEN", "DAT", "ACC")), None)
         number = next((x for x in f["feats"] if x in ("SG", "PL")), None)
         if case and number:
-            out.add((case, number, f["form"]))
+            # Some lexemes pack variants into one representation ("Monstren, Monstra").
+            # Only letter-comma-letter separates variants; decimal commas stay
+            # (0,2-Liter-Flasche, 1,2,3-Propentricarbonsäure).
+            for form in PACKED_VARIANTS.split(f["form"]):
+                out.add((case, number, form))
     return out
 
 
