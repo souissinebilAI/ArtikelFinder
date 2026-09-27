@@ -1,0 +1,3 @@
+[submodule "vendor/unimorph-deu"]
+	path = vendor/unimorph-deu
+	url = https://github.com/unimorph/deu.git

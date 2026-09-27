@@ -1,0 +1,2 @@
+# Same bytes on every OS, so pipeline builds are reproducible.
+* text=auto eol=lf
