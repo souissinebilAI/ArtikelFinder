@@ -12,6 +12,23 @@ possible reading instead of guessing, and says where each answer comes from.
 - Runs entirely offline. No server, no AI, no tracking. Permissions: context menu and the
   current tab at the moment you ask; **no "read all your data on all websites" warning**.
 
+## Install (no build needed)
+
+1. Download `artikelfinder-<version>.zip` from the
+   **[latest release](https://github.com/souissinebilAI/ArtikelFinder/releases/latest)**.
+   Use this file, not GitHub's green "Code → Download ZIP" button: that one is source code
+   without the dictionary.
+2. **Unzip it** (right-click → *Extract all…*). Keep the folder; the browser loads the
+   extension from it every time.
+3. Open `chrome://extensions` (Edge: `edge://extensions`), turn on **Developer mode**, click
+   **Load unpacked** and choose the unzipped folder (the one that contains `manifest.json`).
+4. Select a German word on any page → right-click → **Artikel für „…“**. If
+   <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd> does nothing, set a shortcut under
+   `chrome://extensions/shortcuts` (Edge: `edge://extensions/shortcuts`).
+
+To update: download the new zip, replace the folder's contents, press reload on the
+extension card.
+
 ## Why this is harder than a dictionary lookup
 
 German nouns inflect, and one written form can belong to several words:
