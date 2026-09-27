@@ -96,12 +96,30 @@ def read_paradigms(path):
         yield current
 
 
+def restore_bare_dative(p):
+    """Add the modern dative singular where UniMorph lists only the archaic -e form.
+
+    UniMorph gives "dem Tische" / "dem Kinde" as the *only* dative singular of
+    ~6,400 strong nouns and drops the standard "dem Tisch". Wikidata lists the
+    bare form for 99.5% of the affected nouns it covers (5,418 of 5,447), so it
+    is restored, first, as the usual form. Weak nouns (dem Studenten) and
+    lemmas ending in -e are untouched. Returns True if p was changed.
+    """
+    nom = p.slots.get(("NOM", "SG"), [])
+    dat = p.slots.get(("DAT", "SG"), [])
+    if len(nom) == 1 and dat and not nom[0].endswith("e") and all(f == nom[0] + "e" for f in dat):
+        dat.insert(0, nom[0])
+        return True
+    return False
+
+
 def load_paradigms(path):
     """All noun paradigms with exact duplicates removed. Returns (paradigms, n_duplicates)."""
     seen = set()
     out = []
     dupes = 0
     for p in read_paradigms(path):
+        restore_bare_dative(p)
         k = p.key()
         if k in seen:
             dupes += 1

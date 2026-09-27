@@ -51,6 +51,14 @@ class RegularNouns(unittest.TestCase):
         self.assertReading("Tischen", "Tisch", "MASC", "DAT.PL")
         self.assertReading("Tisches", "Tisch", "MASC", "GEN.SG")
 
+    def test_modern_dative_singular_restored(self):
+        # UniMorph lists only archaic "dem Tische"; "dem Tisch" is the standard form.
+        self.assertReading("Tisch", "Tisch", "MASC", "DAT.SG")
+        self.assertReading("Tische", "Tisch", "MASC", "DAT.SG")
+        self.assertReading("Kind", "Kind", "NEUT", "DAT.SG")
+        # Weak nouns keep -en only.
+        self.assertNotIn("DAT.SG", {c for l, _, cs in lookup("Student") if l == "Student" for c in cs})
+
     def test_kind(self):
         self.assertReading("Kind", "Kind", "NEUT", "NOM.SG")
         self.assertReading("Kinder", "Kind", "NEUT", "NOM.PL")
