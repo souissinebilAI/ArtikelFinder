@@ -58,7 +58,14 @@ Carried over from planning work in Claude (chat/Cowork). Treat this as settled c
   - Verified: `tests/test_runtime_format.py` looks up all 535,239 surfaces and decodes all 196,248 paradigms through the shards and compares them with lexicon.json (identical); hash golden values computed by two independent implementations, which the JS reader must reproduce. Canonical gender order in runtime = MASC, FEM, NEUT (der/die/das).
   - Also fixed during D1: both sources pack variants into one form ("Monstren, Monstra", "Jesus,Jesu"); split on letter-comma-letter only (decimal commas as in 0,2-Liter-Flasche are part of the word). 28 tests pass.
   - Rules for the JS reader: NFC-normalize input; index shard by FNV-1a over UTF-16 code units (`Math.imul`, `>>> 0`); read constants from meta.json.
-- Then Step 4: repo structure + Milestone 1 scope (select word → lookup → display article, no accounts/AI/backend).
+- **Step D2, Milestone 1 scope + repo layout (2026-09-27): see `docs/MILESTONE1.md`.** Key decisions:
+  - **Trigger = context menu + Alt+Shift+A, not auto-bubble on double-click**: needs only `activeTab` + `scripting` + `contextMenus`, so no "read all your data on all websites" install warning. Double-click mode later as opt-in via `optional_host_permissions`.
+  - Lookup runs in the background service worker (data not web-accessible, so pages cannot fingerprint it); bubble injected into the page in a closed Shadow DOM, rendered with `textContent` only (Wikidata is user-editable, never insert as HTML).
+  - Plain JS ES modules, no bundler/framework/TS build; JSDoc types. Tests with `node:test`, no npm dependencies. Chrome/Edge first; Firefox after M1.
+  - Layout: `extension/{manifest.json, src/lexicon.js, src/normalize.js, src/background.js, src/bubble.js, about.html, data/ (generated, git-ignored), test/}`. `python pipeline/export_runtime.py --out extension/data` fills `data/` (refuses targets outside the repo, since it replaces the folder).
+  - JS reader parity is tested against golden lookups written by Python.
+  - Node.js 24 LTS installed via winget (`C:\Program Files
+odejs`; new shells have it on PATH).
 - Then Step 5: implement Milestone 1, testing as we go.
 
 The original cloud chat session couldn't bulk-download the UniMorph data file directly (its network sandbox blocks raw.githubusercontent.com/huggingface.co) — that's why this moved to a local/Code environment with real git access. If the `deu` file isn't already in this project folder, `git clone https://github.com/unimorph/deu.git vendor/unimorph-deu` is the next concrete action.
