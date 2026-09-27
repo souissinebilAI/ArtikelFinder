@@ -1,0 +1,8 @@
+{
+  "name": "artikelfinder",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test \"extension/test/**/*.test.js\""
+  }
+}

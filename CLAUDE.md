@@ -66,5 +66,7 @@ Carried over from planning work in Claude (chat/Cowork). Treat this as settled c
   - JS reader parity is tested against golden lookups written by Python.
   - Node.js 24 LTS installed via winget (`C:\Program Files\nodejs`; new shells have it on PATH).
 - Then Step 5: implement Milestone 1, testing as we go.
+- **Step E1, JS lexicon reader (2026-09-27).** `extension/src/lexicon.js` (`Lexicon.open(loadJson)`, `lookup(surface)`; loader injected, so it runs in Chrome via fetch and in Node via fs). Bounded LRU shard cache that shares in-flight loads and does not cache failures. Parity: `python tests/make_golden.py` writes `build/golden.json` (3,038 lookups stratified by evidence label + hand-picked edge cases, 206 hashes) and `npm test` (node:test, no dependencies) must match it exactly; mutation-checked (swapped gender bits and a signed hash both fail the tests). Cold lookup ≈ 2 ms in Node including file read + parse.
+  - Full check: `python pipeline/build_lexicon.py && python pipeline/export_runtime.py && python pipeline/export_runtime.py --out extension/data && python tests/make_golden.py && python -m unittest discover tests && npm test`
 
 The original cloud chat session couldn't bulk-download the UniMorph data file directly (its network sandbox blocks raw.githubusercontent.com/huggingface.co) — that's why this moved to a local/Code environment with real git access. If the `deu` file isn't already in this project folder, `git clone https://github.com/unimorph/deu.git vendor/unimorph-deu` is the next concrete action.
