@@ -8,6 +8,7 @@
 ## Rebuild
 
 ```bash
+git submodule update --init          # fetch UniMorph at the pinned commit (or clone with --recurse-submodules)
 curl -s https://dumps.wikimedia.org/wikidatawiki/entities/20260923/wikidata-20260923-lexemes.json.bz2 \
   | bzcat | python pipeline/extract_wikidata.py > data/raw/wikidata-de-nouns.jsonl   # ~4 min, 188,949 lexemes
 python pipeline/build_lexicon.py
