@@ -64,8 +64,7 @@ Carried over from planning work in Claude (chat/Cowork). Treat this as settled c
   - Plain JS ES modules, no bundler/framework/TS build; JSDoc types. Tests with `node:test`, no npm dependencies. Chrome/Edge first; Firefox after M1.
   - Layout: `extension/{manifest.json, src/lexicon.js, src/normalize.js, src/background.js, src/bubble.js, about.html, data/ (generated, git-ignored), test/}`. `python pipeline/export_runtime.py --out extension/data` fills `data/` (refuses targets outside the repo, since it replaces the folder).
   - JS reader parity is tested against golden lookups written by Python.
-  - Node.js 24 LTS installed via winget (`C:\Program Files
-odejs`; new shells have it on PATH).
+  - Node.js 24 LTS installed via winget (`C:\Program Files\nodejs`; new shells have it on PATH).
 - Then Step 5: implement Milestone 1, testing as we go.
 
 The original cloud chat session couldn't bulk-download the UniMorph data file directly (its network sandbox blocks raw.githubusercontent.com/huggingface.co) — that's why this moved to a local/Code environment with real git access. If the `deu` file isn't already in this project folder, `git clone https://github.com/unimorph/deu.git vendor/unimorph-deu` is the next concrete action.
