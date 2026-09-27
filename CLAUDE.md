@@ -36,7 +36,14 @@ Carried over from planning work in Claude (chat/Cowork). Treat this as settled c
   - Paradigm boundaries are recovered from UniMorph's row order; 485 exact-duplicate paradigms dropped. Paradigms ↔ lexemes matched one-to-one by Jaccard over (case, number, form) cells, best-first with a margin (refuse coin flips).
   - Every paradigm carries an `evidence` label: agree 18,536 (65%) · filled 1,582 · wikidata (homograph fix) 105 · conflict 308 (Wikidata used, flagged) · unverified 7,577 (27%, UniMorph only) · unknown 396.
   - Output `build/lexicon.json`: 28,504 paradigms, 82,806 surface forms; 11.7 MB raw / 1.8 MB gzip.
-  - Open: coverage vs. real text is unmeasured (no frequency list yet); 188k Wikidata lexemes vs 28k in UniMorph — adding Wikidata-only nouns is a possible 6× coverage gain, undecided.
+- **Step B, coverage measured (2026-09-27).** `eval/measure_coverage.py` on Leipzig Corpora Collection 100K-sentence corpora (news 2023, Wikipedia 2021; evaluation only, never bundled, license not yet confirmed). Denominator = capitalized, non-sentence-initial tokens (German capitalization ≈ noun or name); hyphen splits mimic browser double-click.
+  - Found 55.7% (news) / 54.4% (Wikipedia) of those tokens. Misses: ~19% are **common nouns UniMorph lacks but Wikidata has** (Euro, Millionen, Kritik, Video, Internet, Koalition, Demokratie, Unterstützung — core vocabulary); the rest is mostly names/pronouns ("Sie").
+  - Hand-labeled 100 frequency-weighted non-Wikidata misses: ~20% real nouns (two-thirds compounds, rest nominalized adjectives/infinitives), ~80% names/brands/pronouns/adjectives.
+  - Estimated common-noun coverage: **~69% now → ~94% with Wikidata-only nouns → ~98% with compound fallback** (sample-based, ±several points).
+  - Of found tokens, gender is Wikidata-verified for ~89%, flagged conflict ~2%, UniMorph-only ~7–8%, none ~1%.
+  - **Decompounding warning:** place names look like compounds (Ham|burg → "die Burg", but it is das Hamburg; Deutsch|land). The compound fallback must be labeled heuristic and should not fire on words that look like names.
+  - **Nominalized adjectives** (der/die Jugendliche, Beamten, Vorsitzende, Jährige) are frequent; their gender depends on the referent. They need their own handling/label, not a single article.
+  - Step C decision implied by the data: add Wikidata-only nouns (single-source gender, labeled as such). Wikidata gender agreed with UniMorph in 18,536 of 18,844 comparable paradigms, and the disagreements were mostly UniMorph errors.
 - Then Step 4: repo structure + Milestone 1 scope (select word → lookup → display article, no accounts/AI/backend).
 - Then Step 5: implement Milestone 1, testing as we go.
 

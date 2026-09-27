@@ -5,6 +5,11 @@
 | [UniMorph/deu](https://github.com/unimorph/deu) | commit `d226d2112d3490d8f04ece10d4538123d4297a39` (2024-07-24), in `vendor/unimorph-deu` | CC BY-SA 3.0 | Noun paradigms (surface forms + case/number) |
 | [Wikidata lexemes](https://www.wikidata.org/wiki/Wikidata:Lexicographical_data) | dump `20260923` | CC0 | Gender per homograph; fills UniMorph's missing genders |
 
+Evaluation only (not bundled, not committed): [Leipzig Corpora Collection](https://wortschatz.uni-leipzig.de/en/download)
+`deu_news_2023_100K` and `deu_wikipedia_2021_100K` sentence files, unpacked into `data/raw/`,
+read by `eval/measure_coverage.py`. License terms not yet confirmed; confirm before any use
+beyond local measurement.
+
 ## Rebuild
 
 ```bash
