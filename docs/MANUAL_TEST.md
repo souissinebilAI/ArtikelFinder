@@ -20,7 +20,10 @@ Chrome → `chrome://extensions` → Developer mode on → **Load unpacked** →
 2. **Right-click:** on a German page (e.g. de.wikipedia.org), select *Tischen* →
    right-click → "Artikel für „Tischen“" → bubble: der Tisch, dative plural, 2 sources agree.
 3. **Shortcut:** select *Leitern*, press **Alt+Shift+A** → two entries (die Leiter / der Leiter).
-   If nothing happens, check `chrome://extensions/shortcuts` (another extension may own it).
+   If nothing happens, open `chrome://extensions/shortcuts` (Edge: `edge://extensions/shortcuts`).
+   The manifest key is only a suggestion: the browser skips it silently on conflict and leaves
+   the command unassigned. Confirmed on Edge (2026-09-27): unassigned after install, worked
+   once set by hand.
 4. **Declension:** click "Declension" → table; clicking inside does not close the bubble.
 5. **Close:** Esc, click elsewhere, and scrolling each close it.
 6. **Unknown:** select a name like *Berlin* → "not in the dictionary".
