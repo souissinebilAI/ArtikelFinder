@@ -44,6 +44,12 @@ Carried over from planning work in Claude (chat/Cowork). Treat this as settled c
   - **Decompounding warning:** place names look like compounds (Ham|burg → "die Burg", but it is das Hamburg; Deutsch|land). The compound fallback must be labeled heuristic and should not fire on words that look like names.
   - **Nominalized adjectives** (der/die Jugendliche, Beamten, Vorsitzende, Jährige) are frequent; their gender depends on the referent. They need their own handling/label, not a single article.
   - Step C decision implied by the data: add Wikidata-only nouns (single-source gender, labeled as such). Wikidata gender agreed with UniMorph in 18,536 of 18,844 comparable paradigms, and the disagreements were mostly UniMorph errors.
+- **Step C, Wikidata-only nouns added (2026-09-27).** `add_wikidata_only()` in `pipeline/build_lexicon.py`; label `wikidata_only`. 22 tests pass.
+  - +167,725 new lemmas. For lemmas UniMorph already has, a Wikidata lexeme is added only if it brings a new gender **and** a new plural (a true missing homograph: das Tag/Tags beside der Tag/Tage), so near-copies of the same word are never shown twice.
+  - Sparse Wikidata lexemes (few/no forms) now match by lemma alone when unambiguous (one gender, no new plural, no lexeme already assigned), fixing e.g. die Geschwulst and Tonart instead of duplicating them. The "no lexeme already assigned" condition keeps das Reis/Reiser (twig) from inheriting der Reis (rice).
+  - Wikidata data defects handled: one Dutch-tagged lexeme with "common" gender (dropped to unknown); lexemes whose forms lack the nominative (Torr, Deut): their lemma is always indexed, with unknown case/number.
+  - Result: 196,248 paradigms, 535,242 surface forms. Coverage of capitalized tokens 55.7% → **75.2%** (news), 54.4% → 72.5% (Wikipedia); estimated common-noun coverage ≈ 94%. Of found tokens: 66% gender verified by both sources / Wikidata match, 27% Wikidata only, 1.6% conflict, 4.4% UniMorph only, 1.2% no gender.
+  - **Cost: lexicon.json is 86 MB raw / 10.8 MB gzip** (was 11.7 / 1.8). Too big to load as one JSON object in an extension; the runtime data format is the first Step D problem (the index also duplicates cell info already in the paradigms).
 - Then Step 4: repo structure + Milestone 1 scope (select word → lookup → display article, no accounts/AI/backend).
 - Then Step 5: implement Milestone 1, testing as we go.
 

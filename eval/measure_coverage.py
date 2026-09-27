@@ -25,8 +25,10 @@ WORD = re.compile(r"[A-Za-zÄÖÜäöüß]+")
 BOUNDARY = re.compile(r"(?:^|[.!?:;\"„“»«)(\[\]–—]\s*)$")
 
 # Weakest-link order: a token is only as certain as its least certain candidate.
-EVIDENCE_RANK = {"agree": 0, "filled": 0, "wikidata": 0, "conflict": 1, "unverified": 2, "unknown": 3}
-EVIDENCE_NAME = ["verified (2 sources / Wikidata)", "conflict (flagged)", "UniMorph only", "no gender"]
+EVIDENCE_RANK = {"agree": 0, "filled": 0, "wikidata": 0, "wikidata_only": 1, "conflict": 2,
+                 "unverified": 3, "unknown": 4}
+EVIDENCE_NAME = ["verified (2 sources / Wikidata)", "Wikidata only", "conflict (flagged)",
+                 "UniMorph only", "no gender"]
 
 
 def noun_candidates(sentence):

@@ -143,9 +143,36 @@ class Regressions(unittest.TestCase):
         self.assertNotIn("MASC", genders_for("Reiser", "Reis"))
 
 
+class WikidataOnlyNouns(unittest.TestCase):
+    """Step C: core vocabulary UniMorph lacks (found missing by eval/measure_coverage.py)."""
+
+    def test_core_vocabulary_found(self):
+        for surface, lemma, gender in (("Euro", "Euro", "MASC"), ("Millionen", "Million", "FEM"),
+                                       ("Kritik", "Kritik", "FEM"), ("Internet", "Internet", "NEUT"),
+                                       ("Medien", "Medium", "NEUT"), ("Koalition", "Koalition", "FEM")):
+            with self.subTest(surface=surface):
+                self.assertEqual(genders_for(surface, lemma), {gender})
+
+    def test_nominalized_adjective_keeps_both_genders(self):
+        # der/die Jugendliche: gender follows the person, so both must survive.
+        self.assertEqual(genders_for("Jugendlichen", "Jugendliche"), {"MASC", "FEM"})
+
+    def test_missing_homograph_added_by_distinct_plural(self):
+        # "Tags" is also des Tags (genitive of der Tag), so check the plural cell only.
+        self.assertEqual({g for g, c in readings("Tags", "Tag") if c == "NOM.PL"}, {"NEUT"})  # das Tag
+        self.assertEqual({g for g, c in readings("Tage", "Tag") if c == "NOM.PL"}, {"MASC"})  # der Tag
+
+    def test_sparse_lexeme_fixes_same_word_instead_of_duplicating_it(self):
+        # Wikidata's Geschwulst has no forms; it must correct UniMorph's das, not add a second noun.
+        self.assertEqual(genders_for("Geschwulst", "Geschwulst"), {"FEM"})
+        self.assertEqual(genders_for("Tonart", "Tonart"), {"FEM"})  # UniMorph had no gender
+
+
 class Invariants(unittest.TestCase):
-    def test_every_paradigm_has_nominative(self):
-        bad = [p["lemma"] for p in PARADIGMS if not ({"NOM.SG", "NOM.PL"} & p["cells"].keys())]
+    def test_every_paradigm_findable_by_lemma(self):
+        # Includes Wikidata lexemes with no or incomplete forms (Torr, Deut).
+        bad = [p["lemma"] for p in PARADIGMS
+               if not any(pid == p["id"] for pid, _ in INDEX.get(p["lemma"], []))]
         self.assertEqual(bad, [])
 
     def test_index_round_trips(self):

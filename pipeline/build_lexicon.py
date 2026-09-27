@@ -22,6 +22,7 @@ gets an evidence label:
                (UniMorph was wrong in nearly every hand-checked case) and
                UniMorph's claim is kept so the UI can show lower confidence
   unverified   no usable Wikidata match; UniMorph's gender kept as-is
+  wikidata_only  not in UniMorph at all; forms and gender from Wikidata alone
   unknown      no gender from either source
 """
 import json
@@ -111,7 +112,29 @@ def match_lexemes(group, wd_lexemes):
         out[i] = (wd_lexemes[j], s)
         open_p.discard(i)
         open_l.discard(j)
+
+    # Fallback for lexemes too sparse to match on forms (Tonart, Geschwulst):
+    # if no lexeme was assigned yet, every lexeme gives the same gender, none
+    # has a plural the paradigms lack, and the paradigms look like variants of
+    # one word (one shared gender claim), it is the same word; match by lemma.
+    # "No lexeme assigned yet" matters: once der Reis (rice) matched on forms,
+    # the leftover das Reis / Reiser (twig) is a different word, not a variant.
+    gender_sets = {tuple(sorted(lex["genders"])) for lex in wd_lexemes if lex["genders"]}
+    if (len(open_l) == len(wd_lexemes) and len(gender_sets) == 1
+            and len({p.genders for p in group}) == 1
+            and not any(nom_plurals(lex["cells"]) - group_plurals(group) for lex in wd_lexemes)):
+        lex = next(lex for lex in wd_lexemes if lex["genders"])
+        for i in open_p:
+            out[i] = (lex, None)
     return out
+
+
+def nom_plurals(cells):
+    return {f for c, n, f in cells if (c, n) == ("NOM", "PL")}
+
+
+def group_plurals(group):
+    return {f for p in group for f in p.slots.get(("NOM", "PL"), [])}
 
 
 def resolve_gender(p, siblings, match):
@@ -139,6 +162,79 @@ def resolve_gender(p, siblings, match):
     return list(wd), "conflict", detail
 
 
+def add_wikidata_only(out_paradigms, wd, matches):
+    """Append Wikidata lexemes that no UniMorph paradigm accounts for.
+
+    UniMorph misses core vocabulary (Euro, Kritik, Internet; see eval/), so
+    Wikidata lexemes are added as single-source paradigms. For a lemma that
+    UniMorph already has, an unmatched lexeme is added only if it brings a
+    gender that lemma lacks (a missing homograph), never a near-copy of a
+    paradigm we already show.
+    """
+    matched_ids = {lex["id"] for lex, _ in matches.values() if lex is not None}
+    genders_by_lemma = defaultdict(set)
+    plurals_by_lemma = defaultdict(set)
+    for p in out_paradigms:
+        genders_by_lemma[p["lemma"]].update(p["genders"])
+        plurals_by_lemma[p["lemma"]].update(p["cells"].get("NOM.PL", []))
+    added, skipped = defaultdict(int), defaultdict(int)
+    seen = set()
+    for lemma in sorted(wd):
+        for lex in wd[lemma]:
+            if lex["id"] in matched_ids:
+                continue
+            # Drop genders German does not have (one Dutch-tagged lexeme uses "common").
+            genders = sorted(set(lex["genders"]) & {"MASC", "FEM", "NEUT"})
+            cells = defaultdict(list)
+            for c, n, f in sorted(lex["cells"]):
+                cells[cell_name(c, n)].append(f)
+            key = (lemma, tuple(genders), tuple(sorted((k, tuple(v)) for k, v in cells.items())))
+            if key in seen:
+                skipped["duplicate"] += 1
+                continue
+            seen.add(key)
+            if lemma in genders_by_lemma:
+                # A true missing homograph has its own gender *and* its own
+                # plural (das Tag / Tags next to der Tag / Tage). Without a new
+                # plural it is the same word UniMorph already shows.
+                if set(genders) <= genders_by_lemma[lemma]:
+                    skipped["same_gender"] += 1
+                    continue
+                if not nom_plurals(lex["cells"]) - plurals_by_lemma[lemma]:
+                    skipped["no_new_plural"] += 1
+                    continue
+                added["new_gender"] += 1
+            else:
+                added["new_lemma"] += 1
+            out_paradigms.append({
+                "id": len(out_paradigms),
+                "lemma": lemma,
+                "genders": genders,
+                "evidence": "wikidata_only" if genders else "unknown",
+                "cells": dict(sorted(cells.items())),
+            })
+    return added, skipped
+
+
+def build_index(out_paradigms):
+    """surface form -> [[paradigm_id, [cells]]].
+
+    Every paradigm is findable by its lemma. Some Wikidata lexemes have no
+    forms, or an incomplete set without the nominative (Torr, Deut); their
+    lemma is indexed with an empty cell list (case and number unknown)
+    rather than a guessed NOM.SG."""
+    index = defaultdict(list)
+    for p in out_paradigms:
+        by_form = defaultdict(list)
+        for cell, forms in p["cells"].items():
+            for f in forms:
+                by_form[f].append(cell)
+        by_form.setdefault(p["lemma"], [])
+        for f, cs in by_form.items():
+            index[f].append([p["id"], sorted(cs)])
+    return index
+
+
 def main():
     paradigms, dupes = load_paradigms(UNIMORPH)
     wd = load_wikidata(WIKIDATA)
@@ -152,7 +248,6 @@ def main():
             matches[pid] = m
 
     out_paradigms = []
-    index = defaultdict(list)
     report = []
     for pid, p in enumerate(paradigms):
         genders, evidence, detail = resolve_gender(p, siblings[p.lemma], matches[pid])
@@ -167,12 +262,9 @@ def main():
             out_paradigms[-1]["unimorph_genders"] = detail["um"]
         if evidence != "agree":
             report.append((p.lemma, pid, evidence, detail))
-        by_form = defaultdict(list)
-        for (c, n), forms in p.slots.items():
-            for f in forms:
-                by_form[f].append(cell_name(c, n))
-        for f, cs in by_form.items():
-            index[f].append([pid, sorted(cs)])
+
+    added, skipped = add_wikidata_only(out_paradigms, wd, matches)
+    index = build_index(out_paradigms)
 
     OUT.mkdir(exist_ok=True)
     with open(OUT / "lexicon.json", "w", encoding="utf-8") as fh:
@@ -188,10 +280,14 @@ def main():
     counts = defaultdict(int)
     for p in out_paradigms:
         counts[p["evidence"]] += 1
-    print(f"paradigms: {len(out_paradigms)} (exact duplicates dropped: {dupes})")
+    print(f"paradigms: {len(out_paradigms)} (UniMorph exact duplicates dropped: {dupes})")
+    print(f"  Wikidata-only added: {added['new_lemma']} new lemmas, "
+          f"{added['new_gender']} homographs with a gender UniMorph lacks")
+    print(f"  Wikidata-only skipped: {skipped['duplicate']} duplicates, "
+          f"{skipped['same_gender']} same-gender and {skipped['no_new_plural']} no-new-plural variants of UniMorph lemmas")
     print(f"surface forms: {len(index)}")
-    for k in ("agree", "filled", "wikidata", "conflict", "unverified", "unknown"):
-        print(f"  {k:<11}{counts[k]:>7}")
+    for k in ("agree", "filled", "wikidata", "conflict", "unverified", "wikidata_only", "unknown"):
+        print(f"  {k:<14}{counts[k]:>7}")
 
 
 if __name__ == "__main__":
