@@ -4,6 +4,8 @@
 
 Uses headless Chrome with a transparent background; each size is drawn from
 the vector source, not scaled down from a large bitmap, so 16 px stays crisp.
+128 px follows the Chrome Web Store rule: 96x96 artwork with 16 px transparent
+padding. The toolbar sizes stay full bleed, where every pixel counts.
 A throwaway profile keeps it away from the user's Chrome profile.
 """
 import shutil
@@ -15,7 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / "docs/icon.svg"
 OUT = ROOT / "extension/icons"
-SIZES = (16, 32, 48, 128)
+SIZES = {16: 0, 32: 0, 48: 0, 128: 16}  # size -> transparent padding
 CHROME_CANDIDATES = (
     r"C:\Program Files\Google\Chrome\Application\chrome.exe",
     r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
@@ -36,11 +38,13 @@ def main():
     svg = SOURCE.read_text(encoding="utf-8")
     OUT.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory() as tmp:
-        for size in SIZES:
+        for size, pad in SIZES.items():
+            art = size - 2 * pad
             page = Path(tmp) / f"icon-{size}.html"
             page.write_text(
                 "<!doctype html><html><body style='margin:0;background:transparent'>"
-                f"<div style='width:{size}px;height:{size}px'>{svg.replace('<svg ', f'<svg width={size} height={size} ', 1)}</div>"
+                f"<div style='width:{art}px;height:{art}px;padding:{pad}px'>"
+                f"{svg.replace('<svg ', f'<svg width={art} height={art} ', 1)}</div>"
                 "</body></html>", encoding="utf-8")
             target = OUT / f"icon-{size}.png"
             subprocess.run([

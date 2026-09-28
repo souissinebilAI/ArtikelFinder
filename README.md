@@ -140,6 +140,10 @@ Pinned source versions and rebuild notes: [data/SOURCES.md](data/SOURCES.md).
 - Chrome and Edge only so far. The keyboard shortcut may need to be set by hand if the browser
   already uses Alt+Shift+A.
 
+## Privacy
+
+ArtikelFinder collects no data and makes no network requests. See [PRIVACY.md](PRIVACY.md).
+
 ## License
 
 Code: [MIT](LICENSE) © 2026 souissinebilAI. Dictionary data: **CC BY-SA 3.0**, built from

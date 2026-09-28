@@ -72,7 +72,7 @@
     return node;
   }
 
-  function renderEntry(e) {
+  function renderEntry(e, expand) {
     const box = el("div", "entry");
     const head = el("div", "head");
     const word = el("span", "word");
@@ -99,6 +99,7 @@
         table.tBodies[0].append(row);
       }
       details.append(table);
+      details.open = expand;
       box.append(details);
     }
     return box;
@@ -167,7 +168,8 @@
       card.append(el("p", "error", view.message));
     } else {
       for (const note of view.notes) card.append(el("p", "note", note));
-      for (const entry of view.entries) card.append(renderEntry(entry));
+      // options.expand opens the first declension table (store screenshots use it).
+      view.entries.forEach((entry, i) => card.append(renderEntry(entry, options.expand === true && i === 0)));
     }
     // Attribution with every result (CC BY-SA), plus the way to the About page.
     const footer = el("div", "footer");
