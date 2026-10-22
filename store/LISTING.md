@@ -58,6 +58,8 @@ dashboard's names differ).
 | Small promo tile (440×280, required) | `store/promo-small-440x280.png` |
 | Marquee (1400×560) | none (optional; only needed to be featured) |
 
+**Promo video (YouTube, unlisted):** `https://www.youtube.com/watch?v=aQYrrctyN6Q`
+
 **Additional fields**
 - Homepage URL: `https://github.com/souissinebilAI/ArtikelFinder`
 - Support URL: `https://github.com/souissinebilAI/ArtikelFinder/issues`

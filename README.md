@@ -6,6 +6,8 @@ possible reading instead of guessing, and says where each answer comes from.
 
 ![ArtikelFinder showing both readings of "Leitern": die Leiter (ladder, all plural cases) and der Leiter (leader, dative plural)](docs/screenshot.png)
 
+**[▶ One-minute demo video](https://www.youtube.com/watch?v=aQYrrctyN6Q)**
+
 - **Select a word → right-click → "Artikel für „…“"**, or press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>.
 - Article and lemma, what the selected form is (case and number), plural, full declension table.
 - A certainty label on every answer: *2 sources agree*, *1 source*, *sources disagree*, *gender unknown*.
