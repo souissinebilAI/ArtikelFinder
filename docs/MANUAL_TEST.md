@@ -19,11 +19,12 @@ Chrome → `chrome://extensions` → Developer mode on → **Load unpacked** →
    data on all websites". Permissions shown: context menus only.
 2. **Right-click:** on a German page (e.g. de.wikipedia.org), select *Tischen* →
    right-click → "Artikel für „Tischen“" → bubble: der Tisch, dative plural, 2 sources agree.
-3. **Shortcut:** select *Leitern*, press **Alt+Shift+A** → two entries (die Leiter / der Leiter).
+3. **Shortcut:** select *Leitern*, press **Alt+Shift+D** → two entries (die Leiter / der Leiter).
    If nothing happens, open `chrome://extensions/shortcuts` (Edge: `edge://extensions/shortcuts`).
    The manifest key is only a suggestion: the browser skips it silently on conflict and leaves
    the command unassigned. Confirmed on Edge (2026-09-27): unassigned after install, worked
-   once set by hand.
+   once set by hand. The old default Alt+Shift+A is reserved by Chrome ("Focus on inactive
+   dialogs"), and Ctrl+Shift+A is tab search in both browsers; changed to Alt+Shift+D in 0.1.3.
 4. **Declension:** click "Declension" → table; clicking inside does not close the bubble.
 5. **Close:** Esc, click elsewhere, and scrolling each close it.
 6. **Unknown:** select a name like *Berlin* → "not in the dictionary".

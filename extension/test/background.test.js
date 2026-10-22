@@ -19,7 +19,14 @@ test("manifest keeps the least-privilege promise", () => {
   for (const key of ["host_permissions", "optional_host_permissions", "content_scripts", "web_accessible_resources"]) {
     assert.equal(manifest[key], undefined, `${key} must not be declared`);
   }
-  assert.equal(manifest.commands["lookup-selection"].suggested_key.default, "Alt+Shift+A");
+  const shortcut = manifest.commands["lookup-selection"].suggested_key.default;
+  assert.equal(shortcut, "Alt+Shift+D");
+  // Reserved by the browsers themselves (official shortcut lists, checked 2026-10-22): the
+  // browser always wins, so a default from this list silently never fires. Alt+Shift+A was
+  // our first default and is Chrome's "Focus on inactive dialogs".
+  const reserved = ["Alt+Shift+A", "Alt+Shift+B", "Alt+Shift+I", "Alt+Shift+N", "Alt+Shift+T",
+    "Ctrl+Shift+A", "Ctrl+Shift+B", "Ctrl+Shift+D", "Ctrl+Shift+E", "Ctrl+Shift+Y"];
+  assert.ok(!reserved.includes(shortcut), `${shortcut} is reserved by Chrome or Edge`);
   assert.ok(existsSync(EXT + manifest.background.service_worker));
   assert.ok(existsSync(EXT + "src/bubble.js"));
 });

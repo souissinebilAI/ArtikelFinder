@@ -23,7 +23,7 @@ Learning German? Select any noun on any web page and ArtikelFinder tells you its
 It understands inflected forms, not just dictionary entries. Select "Tischen" and it answers: der Tisch, dative plural. You also get the plural and a full declension table.
 
 HOW TO USE
-Select a word, then right-click and choose "Artikel für …", or press Alt+Shift+A. (If the shortcut does nothing, set it under chrome://extensions/shortcuts.)
+Select a word, then right-click and choose "Artikel für …", or press Alt+Shift+D. (If the shortcut does nothing, set it under chrome://extensions/shortcuts.)
 
 EVERY READING, NOT A GUESS
 Some forms belong to more than one word. "Leitern" can be die Leiter (ladder) or der Leiter (leader); "See" can be der See (lake) or die See (sea). ArtikelFinder shows every possible reading instead of silently picking one.
@@ -110,5 +110,5 @@ all three certifications:
 2. Select the word "Tisch" (or any German noun) on the page.
 3. Right-click and choose "Artikel für „Tisch“". A bubble shows "der Tisch" with its case,
    plural and a declension table. Inflected forms work too (e.g. "Tischen", dative plural).
-Alternatively press Alt+Shift+A after selecting a word. No account or setup is needed.
+Alternatively press Alt+Shift+D after selecting a word. No account or setup is needed.
 ```

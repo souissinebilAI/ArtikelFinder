@@ -6,7 +6,7 @@ possible reading instead of guessing, and says where each answer comes from.
 
 ![ArtikelFinder showing both readings of "Leitern": die Leiter (ladder, all plural cases) and der Leiter (leader, dative plural)](docs/screenshot.png)
 
-- **Select a word → right-click → "Artikel für „…“"**, or press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd>.
+- **Select a word → right-click → "Artikel für „…“"**, or press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>.
 - Article and lemma, what the selected form is (case and number), plural, full declension table.
 - A certainty label on every answer: *2 sources agree*, *1 source*, *sources disagree*, *gender unknown*.
 - Runs entirely offline. No server, no AI, no tracking. Permissions: context menu and the
@@ -23,7 +23,7 @@ possible reading instead of guessing, and says where each answer comes from.
 3. Open `chrome://extensions` (Edge: `edge://extensions`), turn on **Developer mode**, click
    **Load unpacked** and choose the unzipped folder (the one that contains `manifest.json`).
 4. Select a German word on any page → right-click → **Artikel für „…“**. If
-   <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd> does nothing, set a shortcut under
+   <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> does nothing, set a shortcut under
    `chrome://extensions/shortcuts` (Edge: `edge://extensions/shortcuts`).
 
 To update: download the new zip, replace the folder's contents, press reload on the
@@ -137,8 +137,8 @@ Pinned source versions and rebuild notes: [data/SOURCES.md](data/SOURCES.md).
   last part (*kasse*) works.
 - **ALL-CAPS "SS"** cannot be mapped back to "ß" (*STRASSE*). The bubble says so instead of guessing.
 - **Names** (Berlin, Merkel) are not included.
-- Chrome and Edge only so far. The keyboard shortcut may need to be set by hand if the browser
-  already uses Alt+Shift+A.
+- Chrome and Edge only so far. If another extension already uses Alt+Shift+D, the browser
+  leaves the shortcut unassigned; set one by hand under `chrome://extensions/shortcuts`.
 
 ## Privacy
 

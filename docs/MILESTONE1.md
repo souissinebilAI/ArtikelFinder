@@ -7,7 +7,7 @@ no compound guessing (that is Step F).
 
 ## User flow
 
-1. Select a word, then **right-click → "Artikel für „Tischen"“** or press **Alt+Shift+A**.
+1. Select a word, then **right-click → "Artikel für „Tischen"“** or press **Alt+Shift+D**.
 2. A small bubble appears next to the selection:
 
 ```

@@ -36,7 +36,7 @@
 </style>
 </head>
 <body>
-<h1>Harness: select a word, press Alt+Shift+A</h1>
+<h1>Harness: select a word, press Alt+Shift+D</h1>
 <p id="caption"></p><p id="sub"></p>
 <p id="text">Die Kinder sitzen mit den Studenten an den Tischen. Auf dem Tisch liegen zwei Leitern
 und das Buch des Lehrers. Die Jugendlichen gehen über die STRASSE und schauen auf das Dach.
@@ -87,7 +87,7 @@ und das Buch des Lehrers. Die Jugendlichen gehen über die STRASSE und schauen a
     await window.lookupSelection();
   }
   addEventListener("keydown", (e) => {
-    if (e.altKey && e.shiftKey && e.code === "KeyA") window.lookupSelection();
+    if (e.altKey && e.shiftKey && e.code === "KeyD") window.lookupSelection();
   });
 </script>
 </body>

@@ -18,7 +18,7 @@
   },
   "commands": {
     "lookup-selection": {
-      "suggested_key": { "default": "Alt+Shift+A" },
+      "suggested_key": { "default": "Alt+Shift+D" },
       "description": "Look up the article of the selected word"
     }
   }
