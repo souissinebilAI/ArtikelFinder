@@ -144,7 +144,8 @@ Pinned source versions and rebuild notes: [data/SOURCES.md](data/SOURCES.md).
 
 ## Privacy
 
-ArtikelFinder collects no data and makes no network requests. See [PRIVACY.md](PRIVACY.md).
+ArtikelFinder makes no network requests. It reads only the word you select, when you ask, and
+looks it up on your device; nothing is stored or sent. See [PRIVACY.md](PRIVACY.md).
 
 ## License
 
