@@ -33,7 +33,7 @@ Every answer carries a label: "2 sources agree", "1 source", or "Sources disagre
 
 PRIVATE BY DESIGN
 - The whole dictionary (about 196,000 nouns) ships inside the extension and works offline.
-- No servers, no accounts, no tracking, no data collection.
+- No servers, no accounts, no tracking. The selected word is looked up on your computer and never stored or sent.
 - It reads a page only when you ask it to look up a word. Chrome shows no "read and change all your data on all websites" warning, because it does not need that permission.
 
 OPEN SOURCE
@@ -91,8 +91,11 @@ Used after the user asks for a lookup: injects the extension's own bundled scrip
 **Remote code:** No, I am not using remote code. (All JavaScript is in the package; the
 extension makes no network requests.)
 
-**Data usage:** tick **none** of the data types (the extension collects nothing), then tick
-all three certifications:
+**Data usage:** tick **Contenu du site Web / Website content** only. The Chrome Web Store
+User Data FAQ requires disclosure "even when data is processed or stored locally on a user's
+device and is not transmitted", and the extension reads the selected text. Nothing else applies
+(no personal info, no history, no location, no activity tracking). Then tick all three
+certifications:
 - I do not sell or transfer user data to third parties, outside of the approved use cases
 - I do not use or transfer user data for purposes that are unrelated to my item's single purpose
 - I do not use or transfer user data to determine creditworthiness or for lending purposes

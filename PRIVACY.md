@@ -1,9 +1,19 @@
 # ArtikelFinder privacy policy
 
-*Last updated: 28 September 2026*
+*Last updated: 22 October 2026*
 
-**ArtikelFinder collects no data.** It does not collect, store, transmit, sell or share
-any personal information, browsing history, page content or usage statistics.
+**ArtikelFinder stores nothing and sends nothing.** The only data it handles is the word you
+select on a page when you ask for a lookup, and that word never leaves your computer. It does
+not store, transmit, sell or share any personal information, browsing history, page content or
+usage statistics.
+
+## The one piece of data it handles
+
+| Data | When | What happens to it |
+|---|---|---|
+| The text you selected (website content) | Only when you choose *Artikel für „…“* or press the shortcut | Looked up in the dictionary bundled with the extension, in memory on your device, and shown next to the selection. Then discarded: never saved, never sent anywhere. |
+
+Nothing else on the page is read, and pages you merely visit are never read at all.
 
 ## What the extension does on your computer
 
