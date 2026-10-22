@@ -3,3 +3,8 @@ build/
 data/raw/
 extension/data/
 __pycache__/
+
+# Demo recordings live on YouTube, not in git history
+*.mp4
+*.mov
+*.webm
